@@ -45,7 +45,11 @@ async function run() {
 
     const labels: string[] = getTeamLabel(labelsConfiguration, `@${author}`)
 
-    if (labels.length > 0) await addLabels(client, prNumber, labels)
+    if (labels.length > 0) {
+      await addLabels(client, prNumber, labels)
+    } else {
+      core.info('No labels found')
+    }
   } catch (error) {
     core.error(error)
     core.setFailed(error.message)

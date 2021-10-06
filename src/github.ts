@@ -51,13 +51,13 @@ async function fetchContent(
           ref: github.context.sha
         }
       : {...repoConfiguration}
-  core.info(`info: getting YAML file from ${source}`)
+  core.info(`Getting YAML file from ${source}`)
 
   let response
   try {
     response = await client.repos.getContents(getContestsConfig)
   } catch (e) {
-    core.error('failed connecting to the remote repo')
+    core.error('Failed connecting to the remote repo')
     throw e
   }
 
