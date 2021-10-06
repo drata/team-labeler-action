@@ -37,7 +37,7 @@ DarkSide:
 Create a workflow (eg: `.github/workflows/team-labeler.yml` see [Creating a Workflow file](https://help.github.com/en/articles/configuring-a-workflow#creating-a-workflow-file)) to utilize the labeler action.
 This action only needs the GITHUB_TOKEN secret as it interacts with the GitHub API to modify labels. The action can be used as such:
 
-### self repo labeler usage
+### Self repo labeler usage
 ```yaml
 on: pull_request
 name: team-label
@@ -51,7 +51,7 @@ jobs:
         configuration-path: '.github/teams.yml'
 ```
 
-### remote repo labeler usage
+### Remote repo labeler usage
 ```yaml
 on: pull_request
 name: team-label
