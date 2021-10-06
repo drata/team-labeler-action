@@ -37,6 +37,7 @@ DarkSide:
 Create a workflow (eg: `.github/workflows/team-labeler.yml` see [Creating a Workflow file](https://help.github.com/en/articles/configuring-a-workflow#creating-a-workflow-file)) to utilize the labeler action.
 This action only needs the GITHUB_TOKEN secret as it interacts with the GitHub API to modify labels. The action can be used as such:
 
+### self repo labeler usage
 ```yaml
 on: pull_request
 name: team-label
@@ -47,4 +48,25 @@ jobs:
     - uses: JulienKode/team-labeler-action@v0.1.0
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        configuration-path: '.github/teams.yml'
 ```
+
+### remote repo labeler usage
+```yaml
+on: pull_request
+name: team-label
+jobs:
+  team-labeler:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: JulienKode/team-labeler-action@v0.1.0
+      with:
+        repo-token: "${{ secrets.SECRET_PAT }}"
+        configuration-path: '.github/teams.yml'
+        source: 'remote'
+        owner: 'my-org'
+        repo: 'repository-name'
+        reft: 'my-branch'
+```
+> - `${{ secrets.GITHUB_TOKEN }}` is scoped to the current repository, so if you want to checkout a different repository that is private you will need to provide your own [PAT](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
+
