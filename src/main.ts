@@ -51,8 +51,10 @@ async function run() {
       core.info('No labels found')
     }
   } catch (error) {
-    core.error(error)
-    core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.error(error)
+      core.setFailed(error.message)
+    }
   }
 }
 
