@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as yaml from 'js-yaml'
 
@@ -21,11 +22,15 @@ export function getPrAuthor(): string | undefined {
 
 export async function getLabelsConfiguration(
   client: github.GitHub,
-  configurationPath: string
+  configurationPath: string,
+  source: string,
+  repoConfiguration: any
 ): Promise<Map<string, string[]>> {
   const configurationContent: string = await fetchContent(
     client,
-    configurationPath
+    configurationPath,
+    source,
+    repoConfiguration
   )
   const configObject: any = yaml.safeLoad(configurationContent)
   return getLabelGlobMapFromObject(configObject)
@@ -33,14 +38,28 @@ export async function getLabelsConfiguration(
 
 async function fetchContent(
   client: github.GitHub,
-  repoPath: string
+  repoPath: string,
+  source: string,
+  repoConfiguration: any
 ): Promise<string> {
-  const response = await client.repos.getContents({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    path: repoPath,
-    ref: github.context.sha
-  })
+  const getContestsConfig =
+    source === 'local'
+      ? {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          path: repoPath,
+          ref: github.context.sha
+        }
+      : {...repoConfiguration}
+  core.info(`Getting YAML file from ${source}`)
+
+  let response
+  try {
+    response = await client.repos.getContents(getContestsConfig)
+  } catch (e) {
+    core.error('Failed connecting to the remote repo')
+    throw e
+  }
 
   if (
     !Array.isArray(response.data) &&
